@@ -1,6 +1,6 @@
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AESTest {
 
@@ -9,9 +9,13 @@ public class AESTest {
         String key = "Bar12345Bar12345";
         String initVector = "RandomInitVector";
         String value = "Hello World";
-        String encrypt = AESCoding.encrypt(key, initVector, value);
-        assertNotEquals("Hello World", encrypt);
-        String decrypt = AESCoding.decrypt(key, initVector, encrypt);
-        assertEquals("Hello World", decrypt);
+
+        byte[] encrypt = AESCoding.encrypt(key, initVector, value.getBytes());
+        assertNotNull(encrypt);
+        assertNotEquals("Hello World", new String(encrypt));
+
+        byte[] decrypt = AESCoding.decrypt(key, initVector, encrypt);
+        assertNotNull(decrypt);
+        assertEquals("Hello World", new String(decrypt));
     }
 }
