@@ -4,8 +4,13 @@ import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-class AESCoding {
-    static byte[] encrypt(String key, String initVector, byte[] value) {
+class AESCoding extends Coding {
+    AESCoding(String key, String initVector) {
+        super("AES", key, initVector);
+    }
+    static final AESCoding INSTANCE = new AESCoding("Bar12345Bar12345", "RandomInitVector");
+
+    byte[] encrypt(String key, String initVector, byte[] value) {
         try {
             IvParameterSpec iv = new IvParameterSpec(initVector.getBytes(StandardCharsets.UTF_8));
             SecretKeySpec skeySpec = new SecretKeySpec(key.getBytes(StandardCharsets.UTF_8), "AES");
@@ -23,7 +28,7 @@ class AESCoding {
         return null;
     }
 
-    static byte[] decrypt(String key, String initVector, byte[] encrypted) {
+    byte[] decrypt(String key, String initVector, byte[] encrypted) {
         try {
             IvParameterSpec iv = new IvParameterSpec(initVector.getBytes(StandardCharsets.UTF_8));
             
@@ -32,11 +37,13 @@ class AESCoding {
             
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, skeySpec, iv);
-
-            return cipher.doFinal(Base64.getDecoder().decode(encrypted));
+            String test = new String(encrypted);
+            byte[] bytes = cipher.doFinal(Base64.getDecoder().decode(encrypted));
+            return bytes;
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
+
 }

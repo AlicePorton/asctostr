@@ -5,9 +5,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class ReadAndWrite {
-    public static void writeFile(String path, byte[] w) {
+class ReadAndWrite {
+
+    static void writeFile(String path, byte[] w, Coding type) {
+
         File f = new File(path);
+        w = type.encrypt(w);
         try{
             OutputStream out = new FileOutputStream(f);
             out.write(w);
@@ -18,7 +21,11 @@ public class ReadAndWrite {
 
     }
 
-    static byte[] readFile(String path) {
+    static void writeFile(String path, byte[] w) {
+        writeFile(path, w, StandardCoding.Empty);
+    }
+
+    static byte[] readFile(String path, Coding type) {
         try {
             InputStream in = new FileInputStream(path);
             int size = in.available();
@@ -27,11 +34,16 @@ public class ReadAndWrite {
             for(int i = 0; i < size; i++) {
                 w[i] = (byte)in.read();
             }
-            return w;
+
+            return type.decrypt(w);
         }
         catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    static byte[] readFile(String path) {
+        return readFile(path, StandardCoding.Empty);
     }
 }
